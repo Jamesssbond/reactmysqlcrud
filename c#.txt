@@ -1,0 +1,106 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="YourPage.aspx.cs" Inherits="YourNamespace.YourPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Your Page Title</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Table runat="server" ID="employeeTable" CssClass="table table-bordered">
+                <asp:TableHeaderRow>
+                    <asp:TableHeaderCell>ID</asp:TableHeaderCell>
+                    <asp:TableHeaderCell>Name</asp:TableHeaderCell>
+                    <asp:TableHeaderCell>Delete</asp:TableHeaderCell>
+                    <asp:TableHeaderCell>UpdateInfo</asp:TableHeaderCell>
+                </asp:TableHeaderRow>
+            </asp:Table>
+        </div>
+    </form>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Web.UI.WebControls;
+
+namespace YourNamespace
+{
+    public partial class YourPage : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                // Call a method to get your data
+                List<Employee> data = GetDataFromDatabase();
+
+                // Dynamically create table rows and cells
+                foreach (var item in data)
+                {
+                    TableRow row = new TableRow();
+
+                    TableCell cellId = new TableCell();
+                    cellId.Text = item.ID.ToString();
+                    row.Cells.Add(cellId);
+
+                    TableCell cellName = new TableCell();
+                    cellName.Text = item.Name;
+                    row.Cells.Add(cellName);
+
+                    TableCell cellDelete = new TableCell();
+                    Button deleteButton = new Button();
+                    deleteButton.Text = "Delete";
+                    deleteButton.CssClass = "btn btn-danger";
+                    deleteButton.Click += (s, args) => DeleteEmployee(item.ID);
+                    cellDelete.Controls.Add(deleteButton);
+                    row.Cells.Add(cellDelete);
+
+                    TableCell cellUpdate = new TableCell();
+                    Button updateButton = new Button();
+                    updateButton.Text = "UpdateInfo";
+                    updateButton.CssClass = "btn btn-primary";
+                    updateButton.Click += (s, args) => UpdateEmployee(item.ID);
+                    cellUpdate.Controls.Add(updateButton);
+                    row.Cells.Add(cellUpdate);
+
+                    employeeTable.Rows.Add(row);
+                }
+            }
+        }
+
+        private List<Employee> GetDataFromDatabase()
+        {
+            // Replace this with your logic to fetch data from the database
+            // For demonstration purposes, I'm returning a sample list.
+            return new List<Employee>
+            {
+                new Employee { ID = 1, Name = "John Doe" },
+                new Employee { ID = 2, Name = "Jane Doe" },
+                // Add more data as needed
+            };
+        }
+
+        private void DeleteEmployee(int employeeId)
+        {
+            // Implement your delete logic here
+            // You can use the employeeId to identify the employee to delete
+        }
+
+        private void UpdateEmployee(int employeeId)
+        {
+            // Implement your update logic here
+            // You can use the employeeId to identify the employee to update
+        }
+
+        // Define your Employee class
+        private class Employee
+        {
+            public int ID { get; set; }
+            public string Name { get; set; }
+        }
+    }
+}
